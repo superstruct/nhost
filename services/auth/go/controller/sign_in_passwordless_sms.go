@@ -77,6 +77,12 @@ func (ctrl *Controller) postSigninPasswordlessSmsSignin(
 	user sql.AuthUser,
 	logger *slog.Logger,
 ) *APIError {
+	// If user has an email linked and it's in SSO-only domain, block SMS signin
+	if user.Email.Valid && ctrl.wf.IsSSOOnlyDomain(user.Email.String) {
+		logger.WarnContext(ctx, "SSO-only domain user attempted SMS signin")
+		return ErrSSORequired
+	}
+
 	otp, expiresAt, err := ctrl.wf.sms.SendVerificationCode(
 		ctx,
 		user.PhoneNumber.String,

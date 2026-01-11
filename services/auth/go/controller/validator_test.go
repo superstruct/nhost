@@ -25,6 +25,7 @@ func getConfig() *controller.Config {
 		AllowedRedirectURLs:         []string{},
 		BlockedEmailDomains:         []string{},
 		BlockedEmails:               []string{},
+		SSOOnlyDomains:              []string{},
 		ClientURL:                   clientURL,
 		CustomClaims:                "",
 		CustomClaimsDefaults:        "",
@@ -348,6 +349,84 @@ func TestValidateEmail(t *testing.T) {
 				tc.allowedDomains,
 				tc.allowedEmails,
 			)
+
+			got := fn(tc.email)
+			if tc.expected != got {
+				t.Errorf(
+					"unexpected result for %s: got %t, expected %t",
+					tc.email,
+					got,
+					tc.expected,
+				)
+			}
+		})
+	}
+}
+
+func TestValidateSSOOnlyDomain(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name           string
+		ssoOnlyDomains []string
+		email          string
+		expected       bool
+	}{
+		{
+			name:           "empty domains allows all",
+			ssoOnlyDomains: []string{},
+			email:          "test@acme.com",
+			expected:       false,
+		},
+		{
+			name:           "matching domain returns true",
+			ssoOnlyDomains: []string{"calyx.clinic"},
+			email:          "staff@calyx.clinic",
+			expected:       true,
+		},
+		{
+			name:           "non-matching domain returns false",
+			ssoOnlyDomains: []string{"calyx.clinic"},
+			email:          "user@gmail.com",
+			expected:       false,
+		},
+		{
+			name:           "multiple domains - first match",
+			ssoOnlyDomains: []string{"calyx.clinic", "company.com"},
+			email:          "staff@calyx.clinic",
+			expected:       true,
+		},
+		{
+			name:           "multiple domains - second match",
+			ssoOnlyDomains: []string{"calyx.clinic", "company.com"},
+			email:          "staff@company.com",
+			expected:       true,
+		},
+		{
+			name:           "multiple domains - no match",
+			ssoOnlyDomains: []string{"calyx.clinic", "company.com"},
+			email:          "user@personal.org",
+			expected:       false,
+		},
+		{
+			name:           "invalid email format",
+			ssoOnlyDomains: []string{"calyx.clinic"},
+			email:          "invalid-email",
+			expected:       false,
+		},
+		{
+			name:           "subdomain does not match parent",
+			ssoOnlyDomains: []string{"calyx.clinic"},
+			email:          "staff@sub.calyx.clinic",
+			expected:       false,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			fn := controller.ValidateSSOOnlyDomain(tc.ssoOnlyDomains)
 
 			got := fn(tc.email)
 			if tc.expected != got {

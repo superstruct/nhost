@@ -37,6 +37,7 @@ type Workflows struct {
 	idTokenValidator     *oidc.IDTokenValidatorProviders
 	redirectURLValidator func(redirectTo string) bool
 	ValidateEmail        func(email string) bool
+	IsSSOOnlyDomain      func(email string) bool
 	gravatarURL          func(string) string
 }
 
@@ -69,6 +70,8 @@ func NewWorkflows(
 		cfg.AllowedEmails,
 	)
 
+	ssoOnlyValidator := ValidateSSOOnlyDomain(cfg.SSOOnlyDomains)
+
 	return &Workflows{
 		config:               cfg,
 		jwtGetter:            jwtGetter,
@@ -78,6 +81,7 @@ func NewWorkflows(
 		sms:                  sms,
 		redirectURLValidator: redirectURLValidator,
 		ValidateEmail:        emailValidator,
+		IsSSOOnlyDomain:      ssoOnlyValidator,
 		idTokenValidator:     idTokenValidator,
 		gravatarURL:          gravatarURL,
 	}, nil

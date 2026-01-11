@@ -70,6 +70,11 @@ func (ctrl *Controller) SignInWebauthn( //nolint:ireturn
 		return ctrl.sendError(apiErr), nil
 	}
 
+	if ctrl.wf.IsSSOOnlyDomain(user.Email.String) {
+		logger.WarnContext(ctx, "SSO-only domain attempted WebAuthn signin")
+		return ctrl.sendError(ErrSSORequired), nil
+	}
+
 	keys, apiErr := ctrl.wf.GetUserSecurityKeys(ctx, user.ID, logger)
 	if apiErr != nil {
 		return ctrl.sendError(apiErr), nil

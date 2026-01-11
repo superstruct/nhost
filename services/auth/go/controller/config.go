@@ -36,6 +36,7 @@ type Config struct {
 	AllowedRedirectURLs         []string      `json:"AUTH_ACCESS_CONTROL_ALLOWED_REDIRECT_URLS"`
 	BlockedEmailDomains         stringlice    `json:"AUTH_ACCESS_CONTROL_BLOCKED_EMAIL_DOMAINS"`
 	BlockedEmails               stringlice    `json:"AUTH_ACCESS_CONTROL_BLOCKED_EMAILS"`
+	SSOOnlyDomains              stringlice    `json:"AUTH_SSO_ONLY_DOMAINS"`
 	ClientURL                   *url.URL      `json:"AUTH_CLIENT_URL"`
 	CustomClaims                string        `json:"AUTH_JWT_CUSTOM_CLAIMS"`
 	CustomClaimsDefaults        string        `json:"AUTH_JWT_CUSTOM_CLAIMS_DEFAULTS"`
