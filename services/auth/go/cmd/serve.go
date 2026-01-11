@@ -70,6 +70,7 @@ const (
 	flagBlockedEmails                            = "block-emails"
 	flagAllowedEmailDomains                      = "allowed-email-domains"
 	flagAllowedEmails                            = "allowed-emails"
+	flagSSOOnlyDomains                           = "sso-only-domains"
 	flagEmailPasswordlessEnabled                 = "email-passwordless-enabled"
 	flagRequireElevatedClaim                     = "require-elevated-claim"
 	flagWebauthnEnabled                          = "webauthn-enabled"
@@ -505,6 +506,12 @@ func CommandServe() *cli.Command { //nolint:funlen,maintidx
 				Usage:    "Comma-separated list of emails that can register",
 				Category: "signup",
 				Sources:  cli.EnvVars("AUTH_ACCESS_CONTROL_ALLOWED_EMAILS"),
+			},
+			&cli.StringSliceFlag{ //nolint: exhaustruct
+				Name:     flagSSOOnlyDomains,
+				Usage:    "Comma-separated list of email domains that can only authenticate via OAuth/SSO providers",
+				Category: "signin",
+				Sources:  cli.EnvVars("AUTH_SSO_ONLY_DOMAINS"),
 			},
 			&cli.BoolFlag{ //nolint: exhaustruct
 				Name:     flagEmailPasswordlessEnabled,

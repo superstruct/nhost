@@ -57,6 +57,8 @@ func getConfig(cmd *cli.Command) (controller.Config, error) { //nolint:funlen
 	allowedEmails = slices.DeleteFunc(allowedEmails, func(s string) bool { return s == "" })
 	blockedEmails := cmd.StringSlice(flagBlockedEmails)
 	blockedEmails = slices.DeleteFunc(blockedEmails, func(s string) bool { return s == "" })
+	ssoOnlyDomains := cmd.StringSlice(flagSSOOnlyDomains)
+	ssoOnlyDomains = slices.DeleteFunc(ssoOnlyDomains, func(s string) bool { return s == "" })
 
 	webauhtnRPID := cmd.String(flagWebauthnRPID)
 	if webauhtnRPID == "" {
@@ -84,6 +86,7 @@ func getConfig(cmd *cli.Command) (controller.Config, error) { //nolint:funlen
 		AllowedRedirectURLs:           allowedRedirectURLs,
 		BlockedEmailDomains:           blockedDomains,
 		BlockedEmails:                 blockedEmails,
+		SSOOnlyDomains:                ssoOnlyDomains,
 		ClientURL:                     clientURL,
 		CustomClaims:                  cmd.String(flagCustomClaims),
 		CustomClaimsDefaults:          cmd.String(flagCustomClaimsDefaults),

@@ -41,6 +41,11 @@ func (ctrl *Controller) SignInEmailPassword( //nolint:ireturn
 		return ctrl.respondWithError(apiErr), nil
 	}
 
+	if ctrl.wf.IsSSOOnlyDomain(user.Email.String) {
+		logger.WarnContext(ctx, "SSO-only domain attempted password signin")
+		return ctrl.sendError(ErrSSORequired), nil
+	}
+
 	if !verifyHashPassword(request.Body.Password, user.PasswordHash.String) {
 		logger.WarnContext(ctx, "password doesn't match")
 		return ctrl.sendError(ErrInvalidEmailPassword), nil

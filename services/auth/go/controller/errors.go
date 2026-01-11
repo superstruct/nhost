@@ -22,6 +22,10 @@ func (e *APIError) Error() string {
 	return fmt.Sprintf("API error: %s", e.t)
 }
 
+// SSORequired is a custom error code for domains that require SSO authentication.
+// This is not defined in the OpenAPI spec but we use api.ErrorResponseError type for compatibility.
+const SSORequired api.ErrorResponseError = "sso-required"
+
 var errDuplicateClientCredentials = errors.New(
 	"client credentials MUST NOT be provided in both the Authorization header and the request body",
 )
@@ -29,6 +33,7 @@ var errDuplicateClientCredentials = errors.New(
 var (
 	ErrJWTConfiguration = errors.New("jwt-configuration")
 
+	ErrSSORequired                     = &APIError{SSORequired}
 	ErrAnonymousUsersDisabled          = &APIError{api.DisabledEndpoint}
 	ErrUserEmailNotFound               = &APIError{api.InvalidEmailPassword}
 	ErrUserPhoneNumberNotFound         = &APIError{api.InvalidRequest}
@@ -449,6 +454,12 @@ func (ctrl *Controller) getError( //nolint:gocyclo,cyclop,funlen,maintidx
 			Status:  http.StatusConflict,
 			Error:   err.t,
 			Message: "This endpoint is disabled",
+		}
+	case SSORequired:
+		return ErrorResponse{
+			Status:  http.StatusForbidden,
+			Error:   err.t,
+			Message: "This email domain requires SSO authentication",
 		}
 	case api.UserAlreadyExists:
 		return ErrorResponse{

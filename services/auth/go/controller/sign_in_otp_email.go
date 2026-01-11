@@ -34,6 +34,11 @@ func (ctrl *Controller) SignInOTPEmail( //nolint:ireturn
 		return ctrl.sendError(ErrDisabledEndpoint), nil
 	}
 
+	if ctrl.wf.IsSSOOnlyDomain(string(request.Body.Email)) {
+		logger.WarnContext(ctx, "SSO-only domain attempted OTP signin")
+		return ctrl.sendError(ErrSSORequired), nil
+	}
+
 	options, apiErr := ctrl.signinEmailValidateRequest(
 		ctx, string(request.Body.Email), request.Body.Options, logger,
 	)

@@ -110,3 +110,23 @@ func ValidateEmail(
 		return len(allowedEmailDomains) == 0 && len(allowedEmails) == 0
 	}
 }
+
+// ValidateSSOOnlyDomain returns a function that checks if an email belongs to a domain
+// that requires SSO authentication. When this returns true, non-SSO authentication
+// methods (password, magic link, OTP, WebAuthn) should be blocked.
+func ValidateSSOOnlyDomain(ssoOnlyDomains []string) func(email string) bool {
+	return func(email string) bool {
+		if len(ssoOnlyDomains) == 0 {
+			return false
+		}
+
+		parts := strings.Split(email, "@")
+		if len(parts) != 2 { //nolint:mnd
+			return false
+		}
+
+		domain := parts[1]
+
+		return slices.Contains(ssoOnlyDomains, domain)
+	}
+}

@@ -104,6 +104,13 @@ func (ctrl *Controller) VerifyTicket( //nolint:ireturn
 		return ctrl.sendRedirectError(redirectTo, apiErr), nil
 	}
 
+	// Block SSO-only domains from using tickets (magic link, password reset, etc.)
+	// Email verification tickets are allowed since they just verify ownership
+	if ctrl.wf.IsSSOOnlyDomain(user.Email.String) && ticketType != TicketTypeVerifyEmail {
+		logger.WarnContext(ctx, "SSO-only domain attempted ticket verification")
+		return ctrl.sendRedirectError(redirectTo, ErrSSORequired), nil
+	}
+
 	apiErr = ctrl.getVerifyHandleTicketType(ctx, user, ticketType, logger)
 	if apiErr != nil {
 		return ctrl.sendRedirectError(redirectTo, apiErr), nil
