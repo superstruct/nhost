@@ -124,6 +124,7 @@ func TestVerifySignInWebauthn(t *testing.T) { //nolint:maintidx
 					"exp": float64(time.Now().Add(900 * time.Second).Unix()),
 					"https://hasura.io/jwt/claims": map[string]any{
 						"x-hasura-allowed-roles":     []any{"user", "me"},
+						"x-hasura-auth-elevated":     string(""),
 						"x-hasura-default-role":      "user",
 						"x-hasura-user-id":           "d0902ee3-d160-4853-af6a-8d4b6248117e",
 						"x-hasura-user-is-anonymous": "false",
@@ -342,6 +343,7 @@ func TestVerifySignInWebauthn(t *testing.T) { //nolint:maintidx
 					"exp": float64(time.Now().Add(900 * time.Second).Unix()),
 					"https://hasura.io/jwt/claims": map[string]any{
 						"x-hasura-allowed-roles":     []any{"user", "me"},
+						"x-hasura-auth-elevated":     string(""),
 						"x-hasura-default-role":      "user",
 						"x-hasura-user-id":           "176ce216-38af-4223-af49-6be702f4676c",
 						"x-hasura-user-is-anonymous": "false",

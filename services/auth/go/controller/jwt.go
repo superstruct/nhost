@@ -262,6 +262,9 @@ func (j *JWTGetter) GetToken(
 		"x-hasura-default-role":      defaultRole,
 		"x-hasura-user-id":           userID.String(),
 		"x-hasura-user-is-anonymous": strconv.FormatBool(isAnonymous),
+		// Always include auth-elevated claim so Hasura permissions referencing it don't fail
+		// with "missing session variable". When not elevated, empty string won't match any user_id.
+		"x-hasura-auth-elevated": "",
 	}
 
 	if err := j.addClaimsToMap(c, customClaims, false); err != nil {
