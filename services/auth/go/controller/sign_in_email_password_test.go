@@ -135,7 +135,7 @@ func TestSignInEmailPassword(t *testing.T) { //nolint:maintidx
 					"exp": float64(time.Now().Add(900 * time.Second).Unix()),
 					"https://hasura.io/jwt/claims": map[string]any{
 						"x-hasura-allowed-roles":     []any{"user", "me"},
-						"x-hasura-auth-elevated":     string(""),
+						"x-hasura-auth-elevated":     string("00000000-0000-0000-0000-000000000000"),
 						"x-hasura-default-role":      "user",
 						"x-hasura-user-id":           "db477732-48fa-4289-b694-2886a646b6eb",
 						"x-hasura-user-is-anonymous": "false",
@@ -230,7 +230,7 @@ func TestSignInEmailPassword(t *testing.T) { //nolint:maintidx
 					"exp": float64(time.Now().Add(900 * time.Second).Unix()),
 					"https://hasura.io/jwt/claims": map[string]any{
 						"x-hasura-allowed-roles":     []any{"user", "me"},
-						"x-hasura-auth-elevated":     string(""),
+						"x-hasura-auth-elevated":     string("00000000-0000-0000-0000-000000000000"),
 						"x-hasura-default-role":      "user",
 						"x-hasura-claim1":            "value1",
 						"x-hasura-claim2":            "value2",
@@ -476,7 +476,7 @@ func TestSignInEmailPassword(t *testing.T) { //nolint:maintidx
 					"exp": float64(time.Now().Add(900 * time.Second).Unix()),
 					"https://hasura.io/jwt/claims": map[string]any{
 						"x-hasura-allowed-roles":     []any{"user", "me"},
-						"x-hasura-auth-elevated":     string(""),
+						"x-hasura-auth-elevated":     string("00000000-0000-0000-0000-000000000000"),
 						"x-hasura-default-role":      "user",
 						"x-hasura-user-id":           "db477732-48fa-4289-b694-2886a646b6eb",
 						"x-hasura-user-is-anonymous": "false",
