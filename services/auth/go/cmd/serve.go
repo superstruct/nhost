@@ -103,6 +103,7 @@ const (
 	flagSMSTwilioMessagingServiceID      = "sms-twilio-messaging-service-id"
 	flagSMSModicaUsername                = "sms-modica-username"
 	flagSMSModicaPassword                = "sms-modica-password" //nolint:gosec
+	flagSMSPasswordlessSignupDisabled    = "sms-passwordless-signup-disabled"
 	flagAnonymousUsersEnabled            = "enable-anonymous-users"
 	flagMfaEnabled                       = "mfa-enabled"
 	flagMfaTotpIssuer                    = "mfa-totp-issuer"
@@ -719,6 +720,13 @@ func CommandServe() *cli.Command { //nolint:funlen,maintidx
 				Usage:    "Modica password for SMS",
 				Category: "sms",
 				Sources:  cli.EnvVars("AUTH_SMS_MODICA_PASSWORD"),
+			},
+			&cli.BoolFlag{ //nolint: exhaustruct
+				Name:     flagSMSPasswordlessSignupDisabled,
+				Usage:    "When enabled, SMS passwordless signin will not auto-create new user accounts. Non-existing phone numbers will receive an identical 200 OK response to prevent enumeration.",
+				Value:    false,
+				Category: "sms",
+				Sources:  cli.EnvVars("AUTH_SMS_PASSWORDLESS_SIGNUP_DISABLED"),
 			},
 			&cli.BoolFlag{ //nolint: exhaustruct
 				Name:     flagAnonymousUsersEnabled,

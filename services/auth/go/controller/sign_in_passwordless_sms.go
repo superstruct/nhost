@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	mrand "math/rand/v2"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,6 +36,16 @@ func (ctrl *Controller) SignInPasswordlessSms( //nolint:ireturn
 	user, apiErr := ctrl.wf.GetUserByPhoneNumber(ctx, request.Body.PhoneNumber, logger)
 	switch {
 	case errors.Is(apiErr, ErrUserPhoneNumberNotFound):
+		if ctrl.config.SMSPasswordlessSignupDisabled {
+			logger.InfoContext(ctx, "user does not exist, signup disabled via SMS, returning OK")
+			// Random jitter prevents timing-based phone enumeration.
+			// Existing users take ~200-500ms due to SMS API call (Modica).
+			jitter := time.Duration(200+mrand.IntN(400)) * time.Millisecond //nolint:mnd
+			time.Sleep(jitter)
+
+			return api.SignInPasswordlessSms200JSONResponse(api.OK), nil
+		}
+
 		logger.InfoContext(ctx, "user does not exist, creating user")
 
 		if apiErr := ctrl.postSigninPasswordlessSmsSignup(

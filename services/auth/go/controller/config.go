@@ -65,6 +65,7 @@ type Config struct {
 	WebauhtnAttestationTimeout  time.Duration `json:"AUTH_WEBAUTHN_ATTESTATION_TIMEOUT"`
 	OTPEmailEnabled             bool          `json:"AUTH_OTP_EMAIL_ENABLED"`
 	SMSPasswordlessEnabled      bool          `json:"AUTH_SMS_PASSWORDLESS_ENABLED"`
+	SMSPasswordlessSignupDisabled bool       `json:"AUTH_SMS_PASSWORDLESS_SIGNUP_DISABLED"`
 	SMSProvider                 string        `json:"AUTH_SMS_PROVIDER"`
 	SMSTwilioAccountSid         string        `json:"AUTH_SMS_TWILIO_ACCOUNT_SID"`
 	SMSTwilioAuthToken          string        `json:"AUTH_SMS_TWILIO_AUTH_TOKEN"`
