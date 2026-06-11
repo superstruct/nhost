@@ -49,6 +49,7 @@ func TestVerifyAddSecurityKey(t *testing.T) { //nolint:maintidx
 				"exp": float64(time.Now().Add(900 * time.Second).Unix()),
 				"https://hasura.io/jwt/claims": map[string]any{
 					"x-hasura-allowed-roles":     []any{"user", "me"},
+					"x-hasura-auth-elevated":     "00000000-0000-0000-0000-000000000000",
 					"x-hasura-default-role":      "user",
 					"x-hasura-user-id":           userID.String(),
 					"x-hasura-user-is-anonymous": "false",

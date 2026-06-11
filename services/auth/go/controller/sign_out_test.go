@@ -106,6 +106,7 @@ func TestSignOut(t *testing.T) {
 						"iat": float64(1234567890),
 						"https://hasura.io/jwt/claims": map[string]any{
 							"x-hasura-allowed-roles": []any{"user", "admin"},
+							"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
 							"x-hasura-default-role":  "user",
 							"x-hasura-user-id":       userID.String(),
 						},
@@ -206,6 +207,7 @@ func TestSignOut(t *testing.T) {
 						"iat": float64(1234567890),
 						"https://hasura.io/jwt/claims": map[string]any{
 							"x-hasura-allowed-roles": []any{"user", "admin"},
+							"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
 							"x-hasura-default-role":  "user",
 							"x-hasura-user-id":       userID.String(),
 						},

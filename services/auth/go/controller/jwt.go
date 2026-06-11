@@ -280,6 +280,11 @@ func (j *JWTGetter) GraphQLClaims(
 		"x-hasura-default-role":      defaultRole,
 		"x-hasura-user-id":           userID.String(),
 		"x-hasura-user-is-anonymous": strconv.FormatBool(isAnonymous),
+		// Always include auth-elevated claim so Hasura permissions referencing it don't fail
+		// with "missing session variable". Use nil UUID when not elevated so it's a valid UUID
+		// for column comparisons but never matches any real user_id. Elevation flows override
+		// this via extraClaims below.
+		"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
 	}
 
 	if err := j.addClaimsToMap(c, customClaims, false); err != nil {
@@ -313,6 +318,9 @@ func (j *JWTGetter) RawGraphQLClaims(
 		"x-hasura-default-role":      defaultRole,
 		"x-hasura-user-id":           userID.String(),
 		"x-hasura-user-is-anonymous": isAnonymous,
+		// Keep parity with GraphQLClaims: auth-elevated is always present, nil UUID
+		// when not elevated (overridden via extraClaims by elevation flows).
+		"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
 	}
 
 	addRawClaimsToMap(c, customClaims, false)

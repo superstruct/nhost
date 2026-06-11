@@ -70,7 +70,8 @@ func TestGetJWTFunc(t *testing.T) {
 							string("project_manager"),
 							string("anonymous"),
 						},
-						"x-hasura-default-role": string("user"),
+						"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
+						"x-hasura-default-role":  string("user"),
 						"x-hasura-user-id": string(
 							"585e21fc-3664-4d03-8539-69945342a4f4",
 						),
@@ -106,7 +107,8 @@ func TestGetJWTFunc(t *testing.T) {
 							string("project_manager"),
 							string("anonymous"),
 						},
-						"x-hasura-default-role": string("user"),
+						"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
+						"x-hasura-default-role":  string("user"),
 						"x-hasura-user-id": string(
 							"585e21fc-3664-4d03-8539-69945342a4f4",
 						),
@@ -142,7 +144,8 @@ func TestGetJWTFunc(t *testing.T) {
 							string("project_manager"),
 							string("anonymous"),
 						},
-						"x-hasura-default-role": string("user"),
+						"x-hasura-auth-elevated": "00000000-0000-0000-0000-000000000000",
+						"x-hasura-default-role":  string("user"),
 						"x-hasura-user-id": string(
 							"585e21fc-3664-4d03-8539-69945342a4f4",
 						),
@@ -178,6 +181,7 @@ func TestGetJWTFunc(t *testing.T) {
 							"project_manager",
 							"anonymous",
 						},
+						"x-hasura-auth-elevated":     "00000000-0000-0000-0000-000000000000",
 						"x-hasura-default-role":      "user",
 						"x-hasura-float":             "123.456",
 						"x-hasura-user-id":           "585e21fc-3664-4d03-8539-69945342a4f4",
@@ -294,6 +298,7 @@ func signTestToken(
 		"sub": userID.String(),
 		"https://hasura.io/jwt/claims": map[string]any{
 			"x-hasura-allowed-roles":     []string{"me", "user", "editor"},
+			"x-hasura-auth-elevated":     "00000000-0000-0000-0000-000000000000",
 			"x-hasura-default-role":      "user",
 			"x-hasura-user-id":           userID.String(),
 			"x-hasura-user-is-anonymous": "false",
