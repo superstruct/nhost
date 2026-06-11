@@ -448,6 +448,37 @@ func TestSignInPasswordlessSms(t *testing.T) { //nolint:maintidx
 		},
 
 		{
+			name: "signup required - sms-scoped auto-signup disabled",
+			config: func() *controller.Config {
+				config := getConfig()
+				config.SMSPasswordlessSignupDisabled = true
+
+				return config
+			},
+			db: func(ctrl *gomock.Controller) controller.DBClient {
+				mock := mock.NewMockDBClient(ctrl)
+
+				mock.EXPECT().GetUserByPhoneNumber(
+					gomock.Any(),
+					sql.Text("+1234567890"),
+				).Return(sql.AuthUser{}, pgx.ErrNoRows)
+
+				return mock
+			},
+			request: api.SignInPasswordlessSmsRequestObject{
+				Body: &api.SignInPasswordlessSmsRequest{
+					PhoneNumber: "+1234567890",
+					Options:     nil,
+				},
+			},
+			// Returns OK to prevent account enumeration (no SMS sent, no user created)
+			expectedResponse:  api.SignInPasswordlessSms200JSONResponse(api.OK),
+			jwtTokenFn:        nil,
+			expectedJWT:       nil,
+			getControllerOpts: []getControllerOptsFunc{},
+		},
+
+		{
 			name:   "signup not required",
 			config: getConfig,
 			db: func(ctrl *gomock.Controller) controller.DBClient {

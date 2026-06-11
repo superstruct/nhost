@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	mrand "math/rand/v2"
+	"time"
 
 	oapimw "github.com/nhost/nhost/internal/lib/oapi/middleware"
 	"github.com/nhost/nhost/services/auth/go/api"
@@ -32,9 +34,14 @@ func (ctrl *Controller) SignInPasswordlessSms( //nolint:ireturn
 	user, apiErr := ctrl.wf.GetUserByPhoneNumber(ctx, request.Body.PhoneNumber, logger)
 	switch {
 	case errors.Is(apiErr, ErrUserPhoneNumberNotFound):
-		if ctrl.config.DisableAutoSignup {
-			// Return OK to prevent account enumeration - don't send SMS
+		if ctrl.config.DisableAutoSignup || ctrl.config.SMSPasswordlessSignupDisabled {
+			// Return OK to prevent account enumeration - don't send SMS.
+			// Random jitter prevents timing-based phone enumeration: existing
+			// users take ~200-500ms due to the SMS provider API call.
 			logger.InfoContext(ctx, "auto-signup disabled, returning OK without sending SMS")
+			jitter := time.Duration(200+mrand.IntN(400)) * time.Millisecond //nolint:mnd
+			time.Sleep(jitter)
+
 			return api.SignInPasswordlessSms200JSONResponse(api.OK), nil
 		}
 
